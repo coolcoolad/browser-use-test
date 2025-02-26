@@ -1,1 +1,4 @@
 .env
+result.json
+agent_history.gif
+__pycache__

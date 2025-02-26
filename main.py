@@ -1,6 +1,8 @@
 from langchain_openai import AzureChatOpenAI
-from browser_use import Agent
+from browser_use import Agent, Browser, BrowserConfig, AgentHistoryList
 import asyncio
+import json
+import print_object
 from dotenv import load_dotenv
 import os 
 from pydantic import SecretStr
@@ -17,11 +19,20 @@ llm = AzureChatOpenAI(
 )
 
 async def main():
+
+    config = BrowserConfig(
+        headless=False,
+    )
+    
+    browser = Browser(config=config)
+
     agent = Agent(
-        task="找到kong这家公司的主页，然后找到他们的公司简介下载到txt文件中",
+        task="搜索azure ai foundry doc主页, 并抓取左侧树桩导航栏所有link",
         llm=llm,
+        browser=browser,
     )
     result = await agent.run()
-    print(result)
+    # print(result)
+    print_object.save_as_json(result, "result.json", excluded_fields=['screenshot'])
 
 asyncio.run(main())
